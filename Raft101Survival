@@ -1,0 +1,2 @@
+-- Skulx Authorised
+loadstring(game:HttpGet("https://skulx.pages.dev/api?token=ew3salaf90mh"))()
