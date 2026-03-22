@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Skulx — Script Vault</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="bg">
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+</div>
+
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <a class="logo" href="#">
+        <svg class="logo-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 6C18.745 6 8 16.745 8 30c0 8.284 4.19 15.6 10.582 20.02L18 56h28l-.582-5.98C51.81 45.6 56 38.284 56 30 56 16.745 45.255 6 32 6Z" fill="white" fill-opacity="0.12" stroke="white" stroke-width="2"/>
+          <path d="M22 42v8h20v-8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <line x1="26" y1="46" x2="26" y2="50" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="32" y1="46" x2="32" y2="50" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="38" y1="46" x2="38" y2="50" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <ellipse cx="24" cy="29" rx="5" ry="6" fill="white" fill-opacity="0.85"/>
+          <ellipse cx="24" cy="29" rx="2.5" ry="3" fill="black"/>
+          <ellipse cx="40" cy="29" rx="5" ry="6" fill="white" fill-opacity="0.85"/>
+          <ellipse cx="40" cy="29" rx="2.5" ry="3" fill="black"/>
+          <path d="M30 36h4l-2 3-2-3Z" fill="white" fill-opacity="0.5"/>
+        </svg>
+        <span class="logo-text">SKULX</span>
+      </a>
+
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search scripts..."/>
+      </div>
+
+      <button class="btn btn-primary" id="openUploadBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        UPLOAD
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="section-bar">
+      <span class="section-bar-label">// SCRIPT VAULT</span>
+      <div class="section-bar-line"></div>
+      <span class="section-count" id="countLabel">LOADING...</span>
+    </div>
+    <div id="scriptsContainer"></div>
+  </div>
+</main>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <button class="modal-close" id="closeUpload">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>UPLOAD SCRIPT</h2>
+    <div class="form-group">
+      <label>Script Title</label>
+      <input type="text" id="titleInput" placeholder="e.g. Aimbot v2.1"/>
+    </div>
+    <div class="form-group">
+      <label>Author</label>
+      <input type="text" id="authorInput" placeholder="IAmKoszx"/>
+    </div>
+    <div class="form-group">
+      <label>Script Code</label>
+      <textarea id="codeInput" placeholder="-- paste your lua script here..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn" id="cancelUpload">CANCEL</button>
+      <button class="btn btn-primary" id="submitUpload">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        POST SCRIPT
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <button class="modal-close" id="closeEdit">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>EDIT SCRIPT</h2>
+    <input type="hidden" id="editId"/>
+    <div class="form-group">
+      <label>Script Title</label>
+      <input type="text" id="editTitle"/>
+    </div>
+    <div class="form-group">
+      <label>Author</label>
+      <input type="text" id="editAuthor"/>
+    </div>
+    <div class="form-group">
+      <label>Script Code</label>
+      <textarea id="editCode"></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn" id="cancelEdit">CANCEL</button>
+      <button class="btn btn-primary" id="submitEdit">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        SAVE CHANGES
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal" style="max-width:420px;">
+    <button class="modal-close" id="closeDelete">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>DELETE SCRIPT</h2>
+    <p class="confirm-text">Are you sure you want to permanently delete this script?</p>
+    <span class="confirm-name" id="deleteScriptName"></span>
+    <div class="form-actions" style="margin-top:20px;">
+      <button class="btn" id="cancelDelete">CANCEL</button>
+      <button class="btn btn-danger" id="confirmDelete">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+        DELETE
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  SKULX — Script Vault  |  Made by IAmKoszx
+//  Data stored in Cloudflare KV via Pages Functions
+// ============================================================
+
+const API = '/api/scripts';
+
+// Reactions stored per-browser so each user tracks their own votes
+const REACT_KEY = 'skulx_reactions';
+function getReactions() {
+  try { return JSON.parse(localStorage.getItem(REACT_KEY)) || {}; } catch { return {}; }
+}
+function saveReactions(r) { localStorage.setItem(REACT_KEY, JSON.stringify(r)); }
+
+let scripts = [];
+let deleteTargetId = null;
+let searchQuery = '';
+
+// ---- Toast ----
+const toastEl = document.getElementById('toast');
+let toastTimer;
+function toast(msg, type = '') {
+  clearTimeout(toastTimer);
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (type ? ' ' + type : '');
+  toastTimer = setTimeout(() => { toastEl.className = 'toast'; }, 2800);
+}
+
+// ---- API ----
+async function apiFetch(path, opts = {}) {
+  const res = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  if (!res.ok) throw new Error('API ' + res.status);
+  return res.json();
+}
+
+async function fetchScripts() {
+  try {
+    scripts = await apiFetch('');
+    render();
+  } catch {
+    toast('Failed to load scripts', 'error');
+    container.innerHTML = `<div class="empty-state"><p>COULD NOT CONNECT TO SERVER</p></div>`;
+    countLabel.textContent = 'ERROR';
+  }
+}
+
+// ---- Render ----
+const container  = document.getElementById('scriptsContainer');
+const countLabel = document.getElementById('countLabel');
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function formatDate(ts) {
+  return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+}
+
+function render() {
+  const reactions = getReactions();
+  const q = searchQuery.toLowerCase().trim();
+  const filtered = q
+    ? scripts.filter(s =>
+        s.title.toLowerCase().includes(q) ||
+        s.author.toLowerCase().includes(q) ||
+        s.code.toLowerCase().includes(q))
+    : scripts;
+
+  countLabel.textContent = filtered.length + ' SCRIPT' + (filtered.length !== 1 ? 'S' : '');
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+        <path d="M32 8C19.3 8 9 18.3 9 31c0 7.9 4 14.8 10 19v6h26v-6c6-4.2 10-11.1 10-19 0-12.7-10.3-23-23-23Z" stroke="white" stroke-width="2"/>
+        <ellipse cx="23" cy="30" rx="4.5" ry="5.5" fill="white" fill-opacity="0.4"/>
+        <ellipse cx="41" cy="30" rx="4.5" ry="5.5" fill="white" fill-opacity="0.4"/>
+        <path d="M23 42h18M26 46h12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <p>${q ? 'NO SCRIPTS FOUND FOR "' + esc(q.toUpperCase()) + '"' : 'NO SCRIPTS YET — UPLOAD ONE'}</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map((s, i) => {
+    const myReact = reactions[s.id] || null;
+    return `
+    <div class="script-card" data-id="${s.id}" style="animation-delay:${i*0.05}s">
+      <div class="card-header">
+        <div class="card-title">${esc(s.title)}</div>
+        <div class="card-actions">
+          <button class="icon-btn edit-btn" title="Edit" data-id="${s.id}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5Z"/>
+            </svg>
+          </button>
+          <button class="icon-btn delete delete-btn" title="Delete" data-id="${s.id}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+              <path d="M10 11v6M14 11v6"/>
+              <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="card-meta">BY <span>${esc(s.author||'UNKNOWN')}</span> &nbsp;·&nbsp; ${formatDate(s.createdAt)}</div>
+      <div class="card-preview">${esc(s.code)}</div>
+      <div class="card-footer">
+        <div class="reactions">
+          <button class="reaction-btn like-btn ${myReact==='like'?'liked':''}" data-id="${s.id}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="${myReact==='like'?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14Z"/>
+              <path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/>
+            </svg>
+            <span>${s.likes}</span>
+          </button>
+          <button class="reaction-btn dislike-btn ${myReact==='dislike'?'disliked':''}" data-id="${s.id}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="${myReact==='dislike'?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10Z"/>
+              <path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/>
+            </svg>
+            <span>${s.dislikes}</span>
+          </button>
+        </div>
+        <button class="copy-btn" data-id="${s.id}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          COPY
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- Delegated click events ----
+container.addEventListener('click', async e => {
+  const likeBtn    = e.target.closest('.like-btn');
+  const dislikeBtn = e.target.closest('.dislike-btn');
+  const editBtn    = e.target.closest('.edit-btn');
+  const deleteBtn  = e.target.closest('.delete-btn');
+  const copyBtn    = e.target.closest('.copy-btn');
+
+  if (likeBtn) {
+    const id = likeBtn.dataset.id;
+    const reactions = getReactions();
+    const cur = reactions[id];
+    let action, newReact;
+    if (cur === 'like') { action = 'unlike'; newReact = null; }
+    else {
+      if (cur === 'dislike') await apiFetch('/'+id,{method:'PUT',body:JSON.stringify({action:'undislike'})}).catch(()=>{});
+      action = 'like'; newReact = 'like';
+    }
+    try {
+      const updated = await apiFetch('/'+id,{method:'PUT',body:JSON.stringify({action})});
+      reactions[id] = newReact;
+      saveReactions(reactions);
+      const s = scripts.find(x=>x.id===id);
+      if(s){s.likes=updated.likes;s.dislikes=updated.dislikes;}
+      render();
+    } catch { toast('Failed to react','error'); }
+    return;
+  }
+
+  if (dislikeBtn) {
+    const id = dislikeBtn.dataset.id;
+    const reactions = getReactions();
+    const cur = reactions[id];
+    let action, newReact;
+    if (cur === 'dislike') { action = 'undislike'; newReact = null; }
+    else {
+      if (cur === 'like') await apiFetch('/'+id,{method:'PUT',body:JSON.stringify({action:'unlike'})}).catch(()=>{});
+      action = 'dislike'; newReact = 'dislike';
+    }
+    try {
+      const updated = await apiFetch('/'+id,{method:'PUT',body:JSON.stringify({action})});
+      reactions[id] = newReact;
+      saveReactions(reactions);
+      const s = scripts.find(x=>x.id===id);
+      if(s){s.likes=updated.likes;s.dislikes=updated.dislikes;}
+      render();
+    } catch { toast('Failed to react','error'); }
+    return;
+  }
+
+  if (editBtn) {
+    const id = editBtn.dataset.id;
+    const s = scripts.find(x=>x.id===id); if(!s) return;
+    document.getElementById('editId').value    = id;
+    document.getElementById('editTitle').value = s.title;
+    document.getElementById('editAuthor').value= s.author;
+    document.getElementById('editCode').value  = s.code;
+    openModal('editModal');
+    return;
+  }
+
+  if (deleteBtn) {
+    const id = deleteBtn.dataset.id;
+    const s = scripts.find(x=>x.id===id); if(!s) return;
+    deleteTargetId = id;
+    document.getElementById('deleteScriptName').textContent = s.title;
+    openModal('deleteModal');
+    return;
+  }
+
+  if (copyBtn) {
+    const id = copyBtn.dataset.id;
+    const s = scripts.find(x=>x.id===id); if(!s) return;
+    navigator.clipboard.writeText(s.code).then(()=>{
+      copyBtn.innerHTML = '✓ COPIED';
+      copyBtn.classList.add('copied');
+      setTimeout(()=>{
+        copyBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> COPY`;
+        copyBtn.classList.remove('copied');
+      },2000);
+    }).catch(()=>toast('Failed to copy','error'));
+  }
+});
+
+// ---- Modal helpers ----
+function openModal(id){ document.getElementById(id).classList.add('active'); }
+function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+
+document.getElementById('openUploadBtn').addEventListener('click',()=>openModal('uploadModal'));
+document.getElementById('closeUpload').addEventListener('click', ()=>closeModal('uploadModal'));
+document.getElementById('cancelUpload').addEventListener('click',()=>closeModal('uploadModal'));
+document.getElementById('closeEdit').addEventListener('click',   ()=>closeModal('editModal'));
+document.getElementById('cancelEdit').addEventListener('click',  ()=>closeModal('editModal'));
+document.getElementById('closeDelete').addEventListener('click', ()=>closeModal('deleteModal'));
+document.getElementById('cancelDelete').addEventListener('click',()=>closeModal('deleteModal'));
+['uploadModal','editModal','deleteModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{
+    if(e.target===document.getElementById(id)) closeModal(id);
+  });
+});
+
+// ---- Upload ----
+document.getElementById('submitUpload').addEventListener('click', async ()=>{
+  const title  = document.getElementById('titleInput').value.trim();
+  const author = document.getElementById('authorInput').value.trim();
+  const code   = document.getElementById('codeInput').value.trim();
+  if(!title){ toast('Script title is required','error'); return; }
+  if(!code){  toast('Script code cannot be empty','error'); return; }
+  const btn = document.getElementById('submitUpload');
+  btn.textContent='POSTING...'; btn.disabled=true;
+  try {
+    const s = await apiFetch('',{method:'POST',body:JSON.stringify({title,author,code})});
+    scripts.unshift(s); render();
+    document.getElementById('titleInput').value='';
+    document.getElementById('authorInput').value='';
+    document.getElementById('codeInput').value='';
+    closeModal('uploadModal');
+    toast('Script posted!','success');
+  } catch { toast('Failed to post script','error'); }
+  btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> POST SCRIPT`;
+  btn.disabled=false;
+});
+
+// ---- Edit ----
+document.getElementById('submitEdit').addEventListener('click', async ()=>{
+  const id    = document.getElementById('editId').value;
+  const title = document.getElementById('editTitle').value.trim();
+  const author= document.getElementById('editAuthor').value.trim();
+  const code  = document.getElementById('editCode').value.trim();
+  if(!title){ toast('Script title is required','error'); return; }
+  if(!code){  toast('Script code cannot be empty','error'); return; }
+  const btn = document.getElementById('submitEdit');
+  btn.textContent='SAVING...'; btn.disabled=true;
+  try {
+    const updated = await apiFetch('/'+id,{method:'PUT',body:JSON.stringify({title,author,code})});
+    const idx = scripts.findIndex(x=>x.id===id);
+    if(idx!==-1) scripts[idx]={...scripts[idx],...updated};
+    render(); closeModal('editModal');
+    toast('Script updated!','success');
+  } catch { toast('Failed to save changes','error'); }
+  btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> SAVE CHANGES`;
+  btn.disabled=false;
+});
+
+// ---- Delete ----
+document.getElementById('confirmDelete').addEventListener('click', async ()=>{
+  if(!deleteTargetId) return;
+  const btn = document.getElementById('confirmDelete');
+  btn.textContent='DELETING...'; btn.disabled=true;
+  try {
+    await apiFetch('/'+deleteTargetId,{method:'DELETE'});
+    scripts=scripts.filter(x=>x.id!==deleteTargetId);
+    deleteTargetId=null; render(); closeModal('deleteModal');
+    toast('Script deleted','');
+  } catch { toast('Failed to delete','error'); }
+  btn.textContent='DELETE'; btn.disabled=false;
+});
+
+// ---- Search ----
+document.getElementById('searchInput').addEventListener('input',e=>{
+  searchQuery=e.target.value; render();
+});
+
+// ---- Init ----
+fetchScripts();
+</script>
+</body>
+</html>
